@@ -5,7 +5,7 @@ const defaultInput = css`
   border: 1px solid #828282;
   outline: none;
   border-radius: ${rem(12)};
-  font-size: ${rem(13)};
+  font-size: ${rem(16)};
   font-weight: 500;
   line-height: ${rem(17.71)};
   padding: ${rem(17)} ${rem(18.21)} ${rem(17)} ${rem(18.21)};
@@ -17,8 +17,8 @@ const defaultInput = css`
 `;
 
 const smallInput = css`
-  padding: ${0};
-  width: ${rem(295.59)};
+  padding: ${rem(10)} ${rem(0)};
+  width: ${rem(291.59)};
   border: none;
 
   &::placeholder {
@@ -26,9 +26,7 @@ const smallInput = css`
   }
 `;
 
-export const StyledInput = styled.input.attrs({
-  type: "text",
-})`
+export const StyledInput = styled.input`
   ${defaultInput}
   ${({ small }) => small && smallInput}
 `;
