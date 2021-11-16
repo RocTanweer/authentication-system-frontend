@@ -55,8 +55,7 @@ const neutralButton = css`
 `;
 
 const blockSizeButton = css`
-  padding-left: ${rem(116.34)};
-  padding-right: ${rem(116.14)};
+  width: 100%;
 `;
 
 const mdSizeButton = css`
