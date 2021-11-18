@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { rem } from "../../utilities/functions";
 
-const defaultButton = css`
+export const defaultButton = css`
   display: inline-block;
   line-height: ${rem(21.79)};
   text-align: center;
