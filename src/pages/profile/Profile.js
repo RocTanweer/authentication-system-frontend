@@ -1,5 +1,13 @@
+//i Custom components
+import { StyledProfile } from "./Profile.styled";
+import Nav from "../../component/nav/Nav";
+
 function Profile() {
-  return <h1>Profile</h1>;
+  return (
+    <StyledProfile>
+      <Nav />
+    </StyledProfile>
+  );
 }
 
 export default Profile;
