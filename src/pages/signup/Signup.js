@@ -14,8 +14,30 @@ import Button from "../../component/button/Button";
 //i third-party components
 import { MdEmail } from "react-icons/md";
 import { MdLock } from "react-icons/md";
+import { FaUserAlt } from "react-icons/fa";
+
+//i custom hooks
+import { register } from "../../store/GlobalContextProvider";
+import { useNavigate } from "react-router";
 
 function Signup() {
+  const navigate = useNavigate();
+
+  const handleSignupForm = async (e) => {
+    try {
+      e.preventDefault();
+      const form = e.target;
+      await register({
+        name: form.name.value,
+        email: form.email.value,
+        password: form.password.value,
+      });
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
+
   return (
     <>
       {/*To tell the SR that this is a signup page  */}
@@ -34,7 +56,17 @@ function Signup() {
             Master web development by making real-life projects. There are
             multiple paths for you to choose.
           </p>
-          <SignupForm>
+          <SignupForm onSubmit={handleSignupForm}>
+            <InputCard mb={14.5} width={356.48} height={48} borderRadius={8}>
+              <FaUserAlt color="#828282" size={19} />
+              <Input
+                small
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                autoComplete="off"
+              />
+            </InputCard>
             <InputCard mb={14.5} width={356.48} height={48} borderRadius={8}>
               <MdEmail color="#828282" size={24} />
               <Input
