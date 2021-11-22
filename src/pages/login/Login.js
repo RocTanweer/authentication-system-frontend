@@ -14,16 +14,12 @@ import Button from "../../component/button/Button";
 //i third-party components
 import { MdEmail } from "react-icons/md";
 import { MdLock } from "react-icons/md";
-import {
-  useGlobalContext,
-  login,
-  GlobalContext,
-} from "../../store/GlobalContextProvider";
-import { useContext } from "react";
+import { useGlobalContext, login } from "../../store/GlobalContextProvider";
+import { useNavigate } from "react-router";
 
 function Login() {
-  // const { dispatch } = useGlobalContext();
-  const { state, dispatch } = useContext(GlobalContext);
+  const { dispatch } = useGlobalContext();
+  const navigate = useNavigate();
 
   const handleLoginForm = async (e) => {
     try {
@@ -33,6 +29,7 @@ function Login() {
         password: e.target.password.value,
       };
       await login(loginCred, dispatch);
+      navigate("/profile", { replace: true });
     } catch (err) {
       //td do some notification pop-up when login failed
       console.error(err.response);
