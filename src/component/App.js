@@ -4,33 +4,16 @@ import Profile from "../pages/profile/Profile";
 import { GlobalStyles } from "../store/GlobalStyles.styled";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {
-  getAccessToken,
+  getAccessTokenToState,
   useGlobalContext,
-  actions,
 } from "../store/GlobalContextProvider";
 import { useEffect } from "react";
-import { existInLS, fetchFromLS } from "../utilities/functions";
 
 function App() {
   const { dispatch } = useGlobalContext();
 
   useEffect(() => {
-    const getnewAT = async () => {
-      try {
-        if (existInLS("userInfo")) {
-          const { refreshToken, userId } = fetchFromLS("userInfo");
-          const newAccessToken = await getAccessToken(userId, refreshToken);
-          dispatch({
-            type: actions.NEW_AT,
-            payload: { accessToken: newAccessToken },
-          });
-        }
-      } catch (err) {
-        //td show some notification if promise got rejected
-        console.error(err);
-      }
-    };
-    getnewAT();
+    getAccessTokenToState(dispatch);
   }, []);
   return (
     <main>

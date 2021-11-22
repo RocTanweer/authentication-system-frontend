@@ -1,8 +1,7 @@
 //i react imports
 import { createContext, useReducer, useMemo, useContext } from "react";
 import axios from "axios";
-import { saveToLS } from "../utilities/functions";
-import { fetchFromLS } from "../utilities/functions";
+import { saveToLS, fetchFromLS, existInLS } from "../utilities/functions";
 
 export const GlobalContext = createContext();
 
@@ -78,7 +77,9 @@ export const login = async (loginCred, dispatch) => {
  * @param {String} refreshToken refreshToken of the logged in user
  * @return {String} new accesstoken
  */
-export const getAccessToken = async (id, refreshToken) => {
+export const getAccessTokenToState = async (dispatch) => {
+  if (!existInLS("userInfo")) return;
+  const { refreshToken, userId: id } = fetchFromLS("userInfo");
   try {
     const config = {
       headers: {
@@ -90,7 +91,10 @@ export const getAccessToken = async (id, refreshToken) => {
       { refreshToken, id },
       config
     );
-    return res.data.accessToken;
+    dispatch({
+      type: actions.NEW_AT,
+      payload: { accessToken: res.data.accessToken },
+    });
   } catch (err) {
     console.error(err.response);
   }
