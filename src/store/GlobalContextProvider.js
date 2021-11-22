@@ -1,7 +1,12 @@
 //i react imports
 import { createContext, useReducer, useMemo, useContext } from "react";
 import axios from "axios";
-import { saveToLS, fetchFromLS, existInLS } from "../utilities/functions";
+import {
+  saveToLS,
+  fetchFromLS,
+  existInLS,
+  runFuncInInterval,
+} from "../utilities/functions";
 
 export const GlobalContext = createContext();
 
@@ -67,6 +72,8 @@ export const login = async (loginCred, dispatch) => {
 
     //td save to lS
     saveToLS("userInfo", { refreshToken, userId });
+
+    runFuncInInterval(getAccessTokenToState, 60, dispatch);
   } catch (err) {
     throw err;
   }

@@ -33,3 +33,15 @@ export const fetchFromLS = (name) => {
 export const existInLS = (name) => {
   return JSON.parse(localStorage.getItem(name)) !== null;
 };
+
+/**
+ *
+ * @param {Function} func -- to be called in intervals
+ * @param {Number} time -- in seconds
+ * @param {*} args - rest of the parameters
+ */
+export const runFuncInInterval = (func, time, ...args) => {
+  setInterval(() => {
+    func(...args);
+  }, 1000 * time);
+};

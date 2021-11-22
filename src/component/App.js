@@ -8,12 +8,14 @@ import {
   useGlobalContext,
 } from "../store/GlobalContextProvider";
 import { useEffect } from "react";
+import { runFuncInInterval } from "../utilities/functions";
 
 function App() {
   const { dispatch } = useGlobalContext();
 
   useEffect(() => {
     getAccessTokenToState(dispatch);
+    runFuncInInterval(getAccessTokenToState, 60, dispatch);
   }, []);
   return (
     <main>
