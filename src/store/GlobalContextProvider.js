@@ -1,6 +1,8 @@
 //i react imports
 import { createContext, useReducer, useMemo, useContext } from "react";
 import axios from "axios";
+import { saveToLS } from "../utilities/functions";
+import { fetchFromLS } from "../utilities/functions";
 
 export const GlobalContext = createContext();
 
@@ -8,15 +10,16 @@ const baseURLOfApi = "https://authentication-system-api.herokuapp.com";
 
 export const actions = {
   USER_LOGIN: "user-login",
+  NEW_AT: "new-accesstoken",
 };
 
 const initialState = {
   accessToken: undefined,
-  useInfo: {},
+  useInfo: fetchFromLS("userInfo") || {},
 };
 
 /**
- * @param {} registerData from register form
+ * @param {Object} registerData - from register form
  */
 export const register = async (registerData) => {
   try {
@@ -56,27 +59,53 @@ export const login = async (loginCred, dispatch) => {
     const {
       data: { accessToken, refreshToken, userId },
     } = await axios.post(`${baseURLOfApi}/user/login`, loginCred, config);
-    console.log(accessToken, refreshToken, userId);
+
+    //td dispatch the action
     dispatch({
       type: actions.USER_LOGIN,
       payload: { accessToken, userInfo: { refreshToken, userId } },
     });
 
-    //td dispatch the action
+    //td save to lS
+    saveToLS("userInfo", { refreshToken, userId });
   } catch (err) {
     throw err;
+  }
+};
+
+/**
+ * @param {String} id Id of logged in user || alias "userId"
+ * @param {String} refreshToken refreshToken of the logged in user
+ * @return {String} new accesstoken
+ */
+export const getAccessToken = async (id, refreshToken) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await axios.post(
+      `${baseURLOfApi}/refresh-token`,
+      { refreshToken, id },
+      config
+    );
+    return res.data.accessToken;
+  } catch (err) {
+    console.error(err.response);
   }
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case actions.USER_LOGIN:
-      console.log(state);
       return {
         accessToken: action.payload.accessToken,
         userInfo: action.payload.userInfo,
       };
 
+    case actions.NEW_AT:
+      return { ...state, accessToken: action.payload.accessToken };
     default:
       return state;
   }
