@@ -4,11 +4,14 @@ import axios from "axios";
 
 export const GlobalContext = createContext();
 
+const baseURLOfApi = "https://authentication-system-api.herokuapp.com";
+
 export const actions = {
-  USER_REGISTER: "user-register",
+  USER_LOGIN: "user-login",
 };
 
 const initialState = {
+  accessToken: undefined,
   useInfo: {},
 };
 
@@ -22,9 +25,11 @@ export const register = async (registerData) => {
         "Content-Type": "application/json",
       },
     };
+    //i non 2xx response in axios is treated as "errors"
+    //i that's why we are catching/throwing it in catch block
     const res = await axios.post(
       //! DEAL WITH THIS LATER
-      "https://authentication-system-api.herokuapp.com/user/register",
+      `${baseURLOfApi}/user/register`,
       registerData,
       config
     );
@@ -34,15 +39,46 @@ export const register = async (registerData) => {
   }
 };
 
+/**
+ * @param {Object} loginCred - data from login form
+ * @param {Function} dispatch - funtion from useReducer through useGlobalContext
+ * @use To get data from logging response and send it to the state
+ */
+export const login = async (loginCred, dispatch) => {
+  try {
+    //td send login Data and get back response data
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const {
+      data: { accessToken, refreshToken, userId },
+    } = await axios.post(`${baseURLOfApi}/user/login`, loginCred, config);
+    console.log(accessToken, refreshToken, userId);
+    dispatch({
+      type: actions.USER_LOGIN,
+      payload: { accessToken, userInfo: { refreshToken, userId } },
+    });
+
+    //td dispatch the action
+  } catch (err) {
+    throw err;
+  }
+};
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case action.USER_REGISTER:
-      return { ...state };
-      break;
+    case actions.USER_LOGIN:
+      console.log(state);
+      return {
+        accessToken: action.payload.accessToken,
+        userInfo: action.payload.userInfo,
+      };
 
     default:
       return state;
-      break;
   }
 };
 

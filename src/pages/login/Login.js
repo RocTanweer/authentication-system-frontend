@@ -14,8 +14,32 @@ import Button from "../../component/button/Button";
 //i third-party components
 import { MdEmail } from "react-icons/md";
 import { MdLock } from "react-icons/md";
+import {
+  useGlobalContext,
+  login,
+  GlobalContext,
+} from "../../store/GlobalContextProvider";
+import { useContext } from "react";
 
 function Login() {
+  // const { dispatch } = useGlobalContext();
+  const { state, dispatch } = useContext(GlobalContext);
+
+  const handleLoginForm = async (e) => {
+    try {
+      e.preventDefault();
+      const loginCred = {
+        email: e.target.email.value,
+        password: e.target.password.value,
+      };
+      await login(loginCred, dispatch);
+      console.log(state);
+    } catch (err) {
+      //td do some notification pop-up when login failed
+      console.error(err);
+    }
+  };
+
   return (
     <>
       {/*To tell the SR that this is a signup page  */}
@@ -29,7 +53,7 @@ function Login() {
             <img src={Logo} alt="devchallenges logo" />
           </ImageWrapper>
           <h2>Login</h2>
-          <LoginForm>
+          <LoginForm onSubmit={handleLoginForm}>
             <InputCard mb={14.5} width={356.48} height={48} borderRadius={8}>
               <MdEmail color="#828282" size={24} />
               <Input
