@@ -27,6 +27,7 @@ function Signup() {
     try {
       e.preventDefault();
       const form = e.target;
+      //i it will be rejected promise if response status is non 2xx. hense, no redirect to /login page
       await register({
         name: form.name.value,
         email: form.email.value,
@@ -34,6 +35,7 @@ function Signup() {
       });
       navigate("/login", { replace: true });
     } catch (err) {
+      //td Do some notification pop-up when promise rejected
       console.log(err.response);
     }
   };
