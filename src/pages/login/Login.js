@@ -33,10 +33,9 @@ function Login() {
         password: e.target.password.value,
       };
       await login(loginCred, dispatch);
-      console.log(state);
     } catch (err) {
       //td do some notification pop-up when login failed
-      console.error(err);
+      console.error(err.response);
     }
   };
 
