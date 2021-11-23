@@ -16,10 +16,11 @@ import { profileActions } from "./data";
 
 //i third party components
 import { RiLogoutBoxRLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //i react hooks
 import { useState } from "react";
+import { logout } from "../../store/GlobalContextProvider";
 
 /**
  * i instead of wrapping native <nav></nav> component, it wraps styled one
@@ -28,8 +29,18 @@ import { useState } from "react";
  */
 function Nav() {
   const [isCollapse, setIsCollapse] = useState(false);
+  const navigate = useNavigate();
 
   const name = "Xanthe Neal";
+
+  const handleLogoutButton = async (e) => {
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
 
   return (
     <StyledNav>
@@ -59,7 +70,7 @@ function Nav() {
               );
             })}
           </ProfileActions>
-          <LogoutButton>
+          <LogoutButton onClick={handleLogoutButton}>
             <RiLogoutBoxRLine size={19} />
             <span>Logout</span>
           </LogoutButton>

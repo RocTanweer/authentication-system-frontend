@@ -6,6 +6,7 @@ import {
   fetchFromLS,
   existInLS,
   runFuncInInterval,
+  deleteFromLS,
 } from "../utilities/functions";
 
 export const GlobalContext = createContext();
@@ -42,7 +43,6 @@ export const register = async (registerData) => {
       registerData,
       config
     );
-    console.log(res);
   } catch (err) {
     throw err;
   }
@@ -81,6 +81,37 @@ export const login = async (loginCred, dispatch) => {
   }
 };
 
+/**
+ * i fetching user from LS and making a delete request
+ * i thereafter deleting user from lS
+ * i then redirecting to /login
+ */
+export const logout = async () => {
+  const { refreshToken, userId: id } = fetchFromLS("userInfo");
+
+  try {
+    //td send login Data and get back response data
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        refreshToken,
+        id,
+      },
+    };
+    await axios.delete(`${baseURLOfApi}/user/logout`, config);
+    deleteFromLS("userInfo");
+  } catch (err) {
+    throw err;
+  }
+};
+
+/**
+ * @param {String} accessToken new fetched access token
+ * @param {String} userId User id from Local storage
+ * @returns User data of logged in User
+ */
 export const getUserProfileDetails = async (accessToken, userId) => {
   try {
     //td send userId and accesstoken to get back response data
@@ -101,9 +132,9 @@ export const getUserProfileDetails = async (accessToken, userId) => {
 };
 
 /**
- * @param {String} id Id of logged in user || alias "userId"
- * @param {String} refreshToken refreshToken of the logged in user
- * @return {String} new accesstoken
+ *
+ * @param {Function} dispatch Optional - if present then it will set state too
+ * @returns access token using refresh token
  */
 export const getAccessTokenToState = async (dispatch) => {
   if (!existInLS("userInfo")) return;

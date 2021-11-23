@@ -26,6 +26,13 @@ export const fetchFromLS = (name) => {
 };
 
 /**
+ * @param {String} name key of the key/value to be deleted from LS
+ */
+export const deleteFromLS = (name) => {
+  localStorage.removeItem(name);
+};
+
+/**
  *
  * @param {String} name - key
  * @returns {Boolean} - whether exist
