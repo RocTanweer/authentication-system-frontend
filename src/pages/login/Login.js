@@ -15,7 +15,8 @@ import Button from "../../component/button/Button";
 import { MdEmail } from "react-icons/md";
 import { MdLock } from "react-icons/md";
 import { useGlobalContext, login } from "../../store/GlobalContextProvider";
-import { useNavigate } from "react-router";
+import { useNavigate, Navigate } from "react-router";
+import { existInLS } from "../../utilities/functions";
 
 function Login() {
   const { dispatch } = useGlobalContext();
@@ -38,7 +39,8 @@ function Login() {
 
   return (
     <>
-      {/*To tell the SR that this is a signup page  */}
+      {/*To tell the SR that this is a signup page  */}{" "}
+      {existInLS("userInfo") && <Navigate to="/profile" replace="true" />}
       <SrOnly>Login page</SrOnly>
       <Card width={473.83} height={544.37}>
         {/* Div wrapper */}

@@ -18,7 +18,8 @@ import { FaUserAlt } from "react-icons/fa";
 
 //i custom hooks
 import { register } from "../../store/GlobalContextProvider";
-import { useNavigate } from "react-router";
+import { useNavigate, Navigate } from "react-router";
+import { existInLS } from "../../utilities/functions";
 
 function Signup() {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ function Signup() {
   return (
     <>
       {/*To tell the SR that this is a signup page  */}
+      {existInLS("userInfo") && <Navigate to="/profile" replace="true" />}
       <SrOnly>Signup page</SrOnly>
       <Card width={473.83} height={634.3}>
         {/* Div wrapper */}
