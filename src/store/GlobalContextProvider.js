@@ -12,14 +12,16 @@ export const GlobalContext = createContext();
 
 const baseURLOfApi = "https://authentication-system-api.herokuapp.com";
 
-export const actions = {
+export const ACTIONS = {
   USER_LOGIN: "user-login",
   NEW_AT: "new-accesstoken",
+  USER_LOGGED_IN: "profile-info",
 };
 
 const initialState = {
   accessToken: undefined,
-  useInfo: fetchFromLS("userInfo") || {},
+  userInfo: fetchFromLS("userInfo") || {},
+  profileInfo: {},
 };
 
 /**
@@ -66,7 +68,7 @@ export const login = async (loginCred, dispatch) => {
 
     //td dispatch the action
     dispatch({
-      type: actions.USER_LOGIN,
+      type: ACTIONS.USER_LOGIN,
       payload: { accessToken, userInfo: { refreshToken, userId } },
     });
 
@@ -74,6 +76,25 @@ export const login = async (loginCred, dispatch) => {
     saveToLS("userInfo", { refreshToken, userId });
 
     runFuncInInterval(getAccessTokenToState, 60, dispatch);
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getUserProfileDetails = async (accessToken, userId) => {
+  try {
+    //td send userId and accesstoken to get back response data
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    const res = await axios.get(
+      `${baseURLOfApi}/user/profile/${userId}`,
+      config
+    );
+    return res.data.user;
   } catch (err) {
     throw err;
   }
@@ -98,10 +119,14 @@ export const getAccessTokenToState = async (dispatch) => {
       { refreshToken, id },
       config
     );
-    dispatch({
-      type: actions.NEW_AT,
-      payload: { accessToken: res.data.accessToken },
-    });
+    if (dispatch) {
+      dispatch({
+        type: ACTIONS.NEW_AT,
+        payload: { accessToken: res.data.accessToken },
+      });
+    } else {
+      return res.data.accessToken;
+    }
   } catch (err) {
     console.error(err.response);
   }
@@ -109,14 +134,17 @@ export const getAccessTokenToState = async (dispatch) => {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case actions.USER_LOGIN:
+    case ACTIONS.USER_LOGIN:
       return {
         accessToken: action.payload.accessToken,
         userInfo: action.payload.userInfo,
       };
 
-    case actions.NEW_AT:
+    case ACTIONS.NEW_AT:
       return { ...state, accessToken: action.payload.accessToken };
+
+    case ACTIONS.USER_LOGGED_IN:
+      return { ...state, profileInfo: action.payload.profileInfo };
     default:
       return state;
   }

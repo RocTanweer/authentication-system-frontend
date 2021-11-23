@@ -2,29 +2,33 @@
 import { StyledProfile } from "./Profile.styled";
 import Nav from "../../component/nav/Nav";
 import { Navigate } from "react-router-dom";
-import { existInLS } from "../../utilities/functions";
-import { useEffect, runFuncInInterval } from "react";
+import { existInLS, runFuncInInterval } from "../../utilities/functions";
+import { useEffect } from "react";
 import {
   useGlobalContext,
   getUserProfileDetails,
   getAccessTokenToState,
+  ACTIONS,
 } from "../../store/GlobalContextProvider";
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
+  const {
+    userInfo: { userId },
+  } = state;
 
   useEffect(() => {
     const getUserDetails = async () => {
       try {
-        console.log("above gat");
-        getAccessTokenToState(dispatch);
-        console.log("below gat");
+        const newAccessToken = await getAccessTokenToState();
         runFuncInInterval(getAccessTokenToState, 60, dispatch);
-        console.log("above gupd");
-        await getUserProfileDetails(dispatch, state);
-        console.log("below gat");
+        const profileInfo = await getUserProfileDetails(newAccessToken, userId);
+        dispatch({
+          type: ACTIONS.USER_LOGGED_IN,
+          payload: { profileInfo },
+        });
       } catch (err) {
-        console.error(err.response);
+        console.log(err.response);
       }
     };
     getUserDetails();
