@@ -10,17 +10,24 @@ import { SrOnly, StyledLink } from "../../store/GlobalStyles.styled";
 import Logo from "../../assets/logo.svg";
 import Input from "../../component/input/Input";
 import Button from "../../component/button/Button";
+import Loading from "../../component/loading/Loading";
 
 //i third-party components
 import { MdEmail } from "react-icons/md";
 import { MdLock } from "react-icons/md";
-import { useGlobalContext, login } from "../../store/GlobalContextProvider";
+import {
+  useGlobalContext,
+  login,
+  ACTIONS,
+} from "../../store/GlobalContextProvider";
 import { useNavigate, Navigate } from "react-router";
 import { existInLS } from "../../utilities/functions";
 
 function Login() {
-  const { dispatch } = useGlobalContext();
+  const { state, dispatch } = useGlobalContext();
   const navigate = useNavigate();
+
+  const { loading } = state;
 
   const handleLoginForm = async (e) => {
     try {
@@ -29,6 +36,7 @@ function Login() {
         email: e.target.email.value,
         password: e.target.password.value,
       };
+      dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       await login(loginCred, dispatch);
       navigate("/profile", { replace: true });
     } catch (err) {
@@ -73,7 +81,7 @@ function Login() {
             </InputCard>
 
             <Button primary block type="submit">
-              Login
+              {loading ? <Loading color="#ffffff" /> : "Login"}
             </Button>
           </LoginForm>
           <p className="signup-suggestion">

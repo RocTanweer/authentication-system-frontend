@@ -10,6 +10,7 @@ import {
   ProfileCard,
 } from "./Nav.styled";
 import logo from "../../assets/logo.svg";
+import Loading from "../loading/Loading";
 
 //i data
 import { profileActions } from "./data";
@@ -20,7 +21,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 //i react hooks
 import { useState } from "react";
-import { logout } from "../../store/GlobalContextProvider";
+import {
+  logout,
+  useGlobalContext,
+  ACTIONS,
+} from "../../store/GlobalContextProvider";
 
 /**
  * i instead of wrapping native <nav></nav> component, it wraps styled one
@@ -30,12 +35,17 @@ import { logout } from "../../store/GlobalContextProvider";
 function Nav() {
   const [isCollapse, setIsCollapse] = useState(false);
   const navigate = useNavigate();
+  const { state, dispatch } = useGlobalContext();
+
+  const { loading } = state;
 
   const name = "Xanthe Neal";
 
   const handleLogoutButton = async (e) => {
     try {
+      dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       await logout();
+      dispatch({ type: ACTIONS.USER_LOGOUT });
       navigate("/login", { replace: true });
     } catch (err) {
       console.log(err.response);
@@ -72,7 +82,7 @@ function Nav() {
           </ProfileActions>
           <LogoutButton onClick={handleLogoutButton}>
             <RiLogoutBoxRLine size={19} />
-            <span>Logout</span>
+            <span>{loading ? <Loading color="#EB5757" /> : "Logout"}</span>
           </LogoutButton>
         </ProfileCard>
       </ProfileActionWrapper>

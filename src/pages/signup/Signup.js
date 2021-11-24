@@ -10,6 +10,7 @@ import { SrOnly, StyledLink } from "../../store/GlobalStyles.styled";
 import Logo from "../../assets/logo.svg";
 import Input from "../../component/input/Input";
 import Button from "../../component/button/Button";
+import Loading from "../../component/loading/Loading";
 
 //i third-party components
 import { MdEmail } from "react-icons/md";
@@ -17,22 +18,34 @@ import { MdLock } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 
 //i custom hooks
-import { register } from "../../store/GlobalContextProvider";
+import {
+  register,
+  useGlobalContext,
+  ACTIONS,
+} from "../../store/GlobalContextProvider";
 import { useNavigate, Navigate } from "react-router";
 import { existInLS } from "../../utilities/functions";
 
 function Signup() {
   const navigate = useNavigate();
+  const { dispatch, state } = useGlobalContext();
+  const { loading } = state;
 
   const handleSignupForm = async (e) => {
     try {
       e.preventDefault();
       const form = e.target;
+      dispatch({
+        type: ACTIONS.USER_MAKING_REQUEST,
+      });
       //i it will be rejected promise if response status is non 2xx. hense, no redirect to /login page
       await register({
         name: form.name.value,
         email: form.email.value,
         password: form.password.value,
+      });
+      dispatch({
+        type: ACTIONS.USER_SIGNUP,
       });
       navigate("/login", { replace: true });
     } catch (err) {
@@ -92,7 +105,7 @@ function Signup() {
             </InputCard>
 
             <Button primary block type="submit">
-              Start coding now
+              {loading ? <Loading color="#ffffff" /> : "Start coding now"}
             </Button>
           </SignupForm>
           <p className="signup-suggestion">

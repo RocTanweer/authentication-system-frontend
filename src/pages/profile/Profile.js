@@ -13,12 +13,12 @@ import {
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
-  const {
-    userInfo: { userId },
-  } = state;
 
   useEffect(() => {
     const getUserDetails = async () => {
+      const {
+        userInfo: { userId },
+      } = state;
       try {
         const newAccessToken = await getAccessTokenToState();
         runFuncInInterval(getAccessTokenToState, 60, dispatch);
