@@ -19,7 +19,12 @@ export const defaultButton = css`
   border: 1px solid currentColor;
   transition: all 0.15s ease-in-out;
 
+  &:hover {
+    opacity: 0.9;
+  }
+
   &:active {
+    opacity: 1;
     transform: scale(0.98);
   }
 `;
@@ -28,30 +33,12 @@ const primaryButton = css`
   border-color: #2f80ed;
   background-color: #2f80ed;
   color: #ffffff;
-
-  &:hover {
-    background-color: #ffffff;
-    color: #2f80ed;
-  }
-  &:active {
-    background-color: #2f80ed;
-    color: #ffffff;
-  }
 `;
 
 const neutralButton = css`
   border-color: #828282;
   background-color: #ffffff;
   color: #828282;
-
-  &:hover {
-    background-color: #828282;
-    color: #ffffff;
-  }
-  &:active {
-    background-color: #ffffff;
-    color: #828282;
-  }
 `;
 
 const blockSizeButton = css`
