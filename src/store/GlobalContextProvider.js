@@ -14,12 +14,16 @@ export const GlobalContext = createContext();
 const baseURLOfApi = "https://authentication-system-api.herokuapp.com";
 
 export const ACTIONS = {
+  USER_SIGNUP: "user-signup",
   USER_LOGIN: "user-login",
+  USER_LOGOUT: "user-logout",
   NEW_AT: "new-accesstoken",
   USER_LOGGED_IN: "profile-info",
+  USER_MAKING_REQUEST: "user-making-request",
 };
 
 const initialState = {
+  loading: false,
   accessToken: undefined,
   userInfo: fetchFromLS("userInfo") || {},
   profileInfo: {},
@@ -165,17 +169,27 @@ export const getAccessTokenToState = async (dispatch) => {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case ACTIONS.USER_SIGNUP:
+      return { loading: false };
     case ACTIONS.USER_LOGIN:
       return {
         accessToken: action.payload.accessToken,
         userInfo: action.payload.userInfo,
+        loading: false,
       };
-
+    case ACTIONS.USER_LOGOUT:
+      return { ...initialState };
     case ACTIONS.NEW_AT:
       return { ...state, accessToken: action.payload.accessToken };
 
     case ACTIONS.USER_LOGGED_IN:
-      return { ...state, profileInfo: action.payload.profileInfo };
+      return {
+        ...state,
+        profileInfo: action.payload.profileInfo,
+        loading: false,
+      };
+    case ACTIONS.USER_MAKING_REQUEST:
+      return { loading: true };
     default:
       return state;
   }
