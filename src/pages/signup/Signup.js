@@ -35,14 +35,19 @@ function Signup() {
     try {
       e.preventDefault();
       const form = e.target;
+      const name = form.name.value;
+      const email = form.email.value;
+      const password = form.password.value;
+      //td Do things like a notification
+      if (!(name && email && password)) return;
       dispatch({
         type: ACTIONS.USER_MAKING_REQUEST,
       });
       //i it will be rejected promise if response status is non 2xx. hense, no redirect to /login page
       await register({
-        name: form.name.value,
-        email: form.email.value,
-        password: form.password.value,
+        name,
+        email,
+        password,
       });
       dispatch({
         type: ACTIONS.USER_SIGNUP,

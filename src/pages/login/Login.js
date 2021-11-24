@@ -32,9 +32,13 @@ function Login() {
   const handleLoginForm = async (e) => {
     try {
       e.preventDefault();
+      const email = e.target.email.value;
+      const password = e.target.password.value;
+      //td Do things like a notification here
+      if (!(email && password)) return;
       const loginCred = {
-        email: e.target.email.value,
-        password: e.target.password.value,
+        email,
+        password,
       };
       dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       await login(loginCred, dispatch);
