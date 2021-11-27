@@ -1,0 +1,43 @@
+! Running async function inside useEffect of parent component before running async function inside useEffect of child component
+
+i Q) Why am I doing this?
+     when user reloads or directly visits restricted pages, then app will first get the accessToken(AT) and then the resources using that AT.
+     But this was to happen only in the beginning when App component renders but it was happening everytime user visits restricted pages.
+     So I had to use logic in such a way that the app will fetch AT and dispatch it to the state only when App component render and setInterval will 
+     take care of refreshing the accessToken automatically when it expires. THIS WILL PREVENT REQUESTING ACCESSTOKEN EVERYTIME USER VISITS RESTRICTED PAGES.
+
+
+? What I tried and why that didn't work -------------: 
+
+    1. Simply putting async function inside parent and child component's useEffect 
+        \It didn't work because when child component renders after parent component, 
+        \it's useEffect function also runs before it's parent's.
+
+    2. Using useLayoutEffect in parent component
+        \It did run the code inside of useLayoutEffect before code inside useEffect of child component.
+        But since the task was async, the useEffect of child component
+        did not wait[obviosly it was not async/await function case] and run before it's parent.
+
+    3. Using setTimeout function to hold code running of useEffect of the child component
+        To solve problem of "2", using setTimeout function to run useEffect code of child component 
+        after a certain time so that it will wait for the useLayoutEffect's async
+        code to run. But that did not work because it seems like function inside of setTimeout remembers the 
+        variable value when it runs[accessToken===undefined](on initial render) and it uses that value instead of updated value[accessToken]
+
+? What worked and how -------------------:
+
+    1 Prevent running useEffect function on first render of the child component
+        By preventing useEffect code of child component to run on first render when accessToken === undefined and only run when accessToken property changes
+        [putting accessToken in it's dependency array], we are solving "3".
+
+i When user directly visits restricted page or relaods it, here's what happens
+    1. App component render and function inside useLayoutEffect runs[fetching AT]
+    2. Child component render[without running function inside it's useEffect]
+    3. AT is now fetched and dispatched to the state
+    4. Function inside child component's useEffect runs[Since useEffect function inside child component was dependendent on accessToken value from state]
+    5. Resources was fetched using that AT from state and dispatched to the state
+
+
+
+
+
