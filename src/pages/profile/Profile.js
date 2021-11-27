@@ -2,44 +2,43 @@
 import { StyledProfile } from "./Profile.styled";
 import Nav from "../../component/nav/Nav";
 import { Navigate } from "react-router-dom";
-import { existInLS, runFuncInInterval } from "../../utilities/functions";
-import { useEffect } from "react";
+import { existInLS } from "../../utilities/functions";
+import { useEffect, useRef } from "react";
 import {
   useGlobalContext,
   getUserProfileDetails,
-  getAccessTokenToState,
   ACTIONS,
 } from "../../store/GlobalContextProvider";
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
-  console.log("hello from profile");
+  const { userInfo, accessToken } = state;
+
+  const firstUpdate = useRef(true);
 
   useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+
     const getUserDetails = async () => {
-      const {
-        userInfo: { userId },
-      } = state;
-      console.log(userId);
       try {
-        const newAccessToken = await getAccessTokenToState();
-        console.log(newAccessToken);
-        runFuncInInterval(getAccessTokenToState, 60, dispatch);
-        const profileInfo = await getUserProfileDetails(newAccessToken, userId);
+        console.log(accessToken);
+        const profileInfo = await getUserProfileDetails(
+          accessToken,
+          userInfo.userId
+        );
         dispatch({
           type: ACTIONS.USER_LOGGED_IN,
           payload: { profileInfo },
-        });
-        dispatch({
-          type: ACTIONS.NEW_AT,
-          payload: { accessToken: newAccessToken },
         });
       } catch (err) {
         console.log(err.response);
       }
     };
     getUserDetails();
-  }, []);
+  }, [accessToken]);
 
   return (
     <StyledProfile>
