@@ -13,19 +13,26 @@ import {
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
+  console.log("hello from profile");
 
   useEffect(() => {
     const getUserDetails = async () => {
       const {
         userInfo: { userId },
       } = state;
+      console.log(userId);
       try {
         const newAccessToken = await getAccessTokenToState();
+        console.log(newAccessToken);
         runFuncInInterval(getAccessTokenToState, 60, dispatch);
         const profileInfo = await getUserProfileDetails(newAccessToken, userId);
         dispatch({
           type: ACTIONS.USER_LOGGED_IN,
           payload: { profileInfo },
+        });
+        dispatch({
+          type: ACTIONS.NEW_AT,
+          payload: { accessToken: newAccessToken },
         });
       } catch (err) {
         console.log(err.response);
