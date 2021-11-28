@@ -15,7 +15,7 @@ export const StyledNav = styled.nav`
   max-width: ${rem(1263.86)};
   margin: 0 auto;
   height: auto;
-  padding: 0 ${rem(28.06)} 0 ${rem};
+  padding: 0 ${rem(28.06)} 0 ${rem(28.06)};
 `;
 
 export const ProfileActionWrapper = styled.div`

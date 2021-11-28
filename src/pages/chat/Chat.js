@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
-import { StyledChat } from "./Chat.styled";
+import { StyledChat, ChatImgWrapper } from "./Chat.styled";
+import Nav from "../../component/nav/Nav";
+import chatBg from "../../assets/chat-bg.svg";
 
 function Chat() {
   return (
     <StyledChat>
-      <h1>Hello Chat</h1>
-      <Link to="/profile">Profile</Link>
+      <Nav />
+      <ChatImgWrapper>
+        <img src={chatBg} alt="chat-bg" />
+      </ChatImgWrapper>
     </StyledChat>
   );
 }
