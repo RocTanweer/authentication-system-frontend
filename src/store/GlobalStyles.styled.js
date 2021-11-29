@@ -47,7 +47,8 @@ export const GlobalStyles = createGlobalStyle`
     main{
         ${flex}
         width: 100%;
-        height: 100vh;
+        min-height: 100vh;
+        padding-bottom: ${rem(30)};
     }
     p{
         font-weight: 400;

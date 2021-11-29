@@ -13,7 +13,6 @@ import {
 import { runFuncInInterval } from "../utilities/functions";
 function App() {
   const { dispatch } = useGlobalContext();
-  console.log("hello from app");
 
   useLayoutEffect(() => {
     const getNewAT = async () => {

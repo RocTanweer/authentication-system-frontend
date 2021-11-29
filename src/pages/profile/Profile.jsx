@@ -1,5 +1,5 @@
 //i Custom components
-import { StyledProfile } from "./Profile.styled";
+import { StyledProfile, ProfileHeader } from "./Profile.styled";
 import Nav from "../../component/nav/Nav";
 import { Navigate } from "react-router-dom";
 import { existInLS } from "../../utilities/functions";
@@ -9,6 +9,8 @@ import {
   getUserProfileDetails,
   ACTIONS,
 } from "../../store/GlobalContextProvider";
+
+import ProfileDetails from "../../layout/profile/ProfileDetails";
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
@@ -24,7 +26,6 @@ function Profile() {
 
     const getUserDetails = async () => {
       try {
-        console.log(accessToken);
         const profileInfo = await getUserProfileDetails(
           accessToken,
           userInfo.userId
@@ -44,6 +45,11 @@ function Profile() {
     <StyledProfile>
       {!existInLS("userInfo") && <Navigate to="/login" replace="true" />}
       <Nav />
+      <ProfileHeader>
+        <h1>Personal Info</h1>
+        <p>Basic info, like your name and photo</p>
+      </ProfileHeader>
+      <ProfileDetails />
     </StyledProfile>
   );
 }
