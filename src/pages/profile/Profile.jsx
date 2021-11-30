@@ -1,5 +1,10 @@
 //i Custom components
-import { StyledProfile, ProfileHeader } from "./Profile.styled";
+import {
+  StyledProfile,
+  ProfileHeader,
+  BackButton,
+  ProfileEditTop,
+} from "./Profile.styled";
 import Nav from "../../component/nav/Nav";
 import { Navigate } from "react-router-dom";
 import { existInLS } from "../../utilities/functions";
@@ -11,13 +16,22 @@ import {
 } from "../../store/GlobalContextProvider";
 
 import ProfileDetails from "../../layout/profile/ProfileDetails";
+import ChangeInfo from "../../layout/changeInfo/ChangeInfo";
+import { SrOnly } from "../../store/GlobalStyles.styled";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
-  const { userInfo, accessToken } = state;
+  const { userInfo, accessToken, profileEditing } = state;
+
+  const handleBackButton = (e) => {
+    dispatch({
+      type: ACTIONS.USER_PROFILE_EDIT,
+      payload: { profileEditing: false },
+    });
+  };
 
   const firstUpdate = useRef(true);
-
   useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
@@ -45,11 +59,27 @@ function Profile() {
     <StyledProfile>
       {!existInLS("userInfo") && <Navigate to="/login" replace="true" />}
       <Nav />
-      <ProfileHeader>
-        <h1>Personal Info</h1>
-        <p>Basic info, like your name and photo</p>
-      </ProfileHeader>
-      <ProfileDetails />
+      {!profileEditing && (
+        <>
+          <ProfileHeader>
+            <h1>Personal Info</h1>
+            <p>Basic info, like your name and photo</p>
+          </ProfileHeader>
+          <ProfileDetails />
+        </>
+      )}
+
+      {profileEditing && (
+        <>
+          <ProfileEditTop>
+            <SrOnly>Personal Info</SrOnly>
+            <BackButton onClick={handleBackButton} type="button">
+              <MdOutlineKeyboardArrowLeft size={27} /> Back
+            </BackButton>
+          </ProfileEditTop>
+          <ChangeInfo />
+        </>
+      )}
     </StyledProfile>
   );
 }

@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { rem } from "../../utilities/functions";
+import { defaultButton } from "../../component/button/Button.styled";
+import { flex } from "../../store/GlobalStyles.styled";
 
 export const StyledProfile = styled.div`
   width: 100%;
@@ -22,4 +24,19 @@ export const ProfileHeader = styled.header`
     font-size: ${rem(18)};
     line-height: ${rem(25)};
   }
+`;
+
+export const BackButton = styled.button`
+  ${defaultButton}
+  ${flex}
+  border: none;
+  outline: none;
+  color: #2d9cdb;
+  font-size: ${rem(18)};
+  line-height: ${rem(25)};
+`;
+
+export const ProfileEditTop = styled.div`
+  max-width: ${rem(845.91)};
+  margin: ${rem(58.83)} auto ${rem(24)} auto;
 `;
