@@ -18,9 +18,8 @@ const defaultInput = css`
 
 const smallInput = css`
   padding: ${rem(10)} ${rem(0)};
-  width: ${rem(291.59)};
+  width: ${({ width }) => (width ? width : rem(291.59))};
   border: none;
-
   &::placeholder {
     color: #828282;
   }

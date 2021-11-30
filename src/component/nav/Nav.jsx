@@ -56,7 +56,10 @@ function Nav() {
     <StyledNav>
       <img src={logo} alt="main-logo" />
       <ProfileActionWrapper>
-        <DropDownButton onClick={() => setIsCollapse((prev) => !prev)}>
+        <DropDownButton
+          type="button"
+          onClick={() => setIsCollapse((prev) => !prev)}
+        >
           <img src="https://via.placeholder.com/32x36" alt="profile" />
           <span>{name}</span>
           <ArrowIcon $isCollapse={isCollapse} size={20} />
