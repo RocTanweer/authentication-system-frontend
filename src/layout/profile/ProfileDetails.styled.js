@@ -14,6 +14,7 @@ export const Wrapper = styled(Card)`
   margin: 0 auto;
   display: block;
   height: auto;
+  border-width: 1px;
 
   header {
     ${flex}

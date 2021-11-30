@@ -1,5 +1,6 @@
 import { StyledProfileDetails, Wrapper, List } from "./ProfileDetails.styled";
 import Button from "../../component/button/Button";
+import { useGlobalContext, ACTIONS } from "../../store/GlobalContextProvider";
 
 const profileDetails = {
   photo: "https://via.placeholder.com/72x72",
@@ -11,6 +12,15 @@ const profileDetails = {
 };
 
 function ProfileDetails() {
+  const { state, dispatch } = useGlobalContext();
+
+  const handleEditButton = (e) => {
+    dispatch({
+      type: ACTIONS.USER_PROFILE_EDIT,
+      payload: { profileEditing: true },
+    });
+  };
+
   return (
     <StyledProfileDetails>
       <Wrapper width={845.91} height={580.54} borderRadius={12}>
@@ -19,7 +29,7 @@ function ProfileDetails() {
             <h2>Profile</h2>
             <p>Some info maybe visible to other people</p>
           </div>
-          <Button neutral md>
+          <Button type="button" neutral md onClick={handleEditButton}>
             Edit
           </Button>
         </header>
