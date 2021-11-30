@@ -20,6 +20,7 @@ export const ACTIONS = {
   NEW_AT: "new-accesstoken",
   USER_LOGGED_IN: "profile-info",
   USER_MAKING_REQUEST: "user-making-request",
+  USER_PROFILE_EDIT: "user-profile-edit",
 };
 
 const initialState = {
@@ -27,6 +28,7 @@ const initialState = {
   accessToken: undefined,
   userInfo: fetchFromLS("userInfo") || {},
   profileInfo: {},
+  profileEditing: false,
 };
 
 /**
@@ -190,6 +192,8 @@ const reducer = (state, action) => {
       };
     case ACTIONS.USER_MAKING_REQUEST:
       return { loading: true };
+    case ACTIONS.USER_PROFILE_EDIT:
+      return { profileEditing: action.payload.profileEditing };
     default:
       return state;
   }

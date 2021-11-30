@@ -35,7 +35,7 @@ export const GlobalStyles = createGlobalStyle`
         min-height: 100vh;
         margin: 0;
         padding: 0;
-        font-family: "hato sans", sans-serif;
+        font-family: "noto sans", sans-serif;
     }
 
     #root {
