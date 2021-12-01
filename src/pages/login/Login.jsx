@@ -42,6 +42,7 @@ function Login() {
       };
       dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       await login(loginCred, dispatch);
+      dispatch({ type: ACTIONS.IS_LOGGED_IN });
       navigate("/profile", { replace: true });
     } catch (err) {
       //td do some notification pop-up when login failed

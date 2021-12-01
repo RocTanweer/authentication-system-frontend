@@ -22,6 +22,8 @@ export const ACTIONS = {
   USER_MAKING_REQUEST: "user-making-request",
   USER_PROFILE_EDIT: "user-profile-edit",
   USER_EDITING_PROFILE: "user-editing-profile",
+  LOAD_AT_FIRST: "load-at-first",
+  IS_LOGGED_IN: "is-logged-in",
 };
 
 const initialState = {
@@ -31,6 +33,7 @@ const initialState = {
   profileInfo: {},
   editProfileInfo: {},
   profileEditing: false,
+  isLoggedIn: false,
 };
 
 /**
@@ -172,7 +175,7 @@ export const updateUserProfileDetails = async (userId, accessToken, update) => {
  * @returns access token using refresh token
  */
 export const getAccessTokenToState = async (dispatch) => {
-  if (!existInLS("userInfo")) return;
+  if (!existInLS("userInfo")) throw new Error("not logged in!");
   const { refreshToken, userId: id } = fetchFromLS("userInfo");
   try {
     const config = {
@@ -233,6 +236,8 @@ const reducer = (state, action) => {
           [action.payload.name]: action.payload.value,
         },
       };
+    case ACTIONS.IS_LOGGED_IN:
+      return { ...state, isLoggedIn: true };
     default:
       return state;
   }

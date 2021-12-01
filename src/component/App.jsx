@@ -10,20 +10,26 @@ import {
   ACTIONS,
   useGlobalContext,
 } from "../store/GlobalContextProvider";
-import { runFuncInInterval } from "../utilities/functions";
+import { runFuncInInterval, existInLS } from "../utilities/functions";
 function App() {
   const { dispatch } = useGlobalContext();
 
   useLayoutEffect(() => {
     const getNewAT = async () => {
       const newAccessToken = await getAccessTokenToState();
-      runFuncInInterval(getAccessTokenToState, 60, dispatch);
       dispatch({
         type: ACTIONS.NEW_AT,
         payload: { accessToken: newAccessToken },
       });
+      dispatch({
+        type: ACTIONS.IS_LOGGED_IN,
+      });
+      runFuncInInterval(getAccessTokenToState, 60, dispatch);
     };
-    getNewAT();
+    if (existInLS("userInfo")) {
+      dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
+      getNewAT();
+    }
   }, []);
 
   return (

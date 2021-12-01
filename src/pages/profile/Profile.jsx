@@ -8,7 +8,7 @@ import {
 import Nav from "../../component/nav/Nav";
 import { Navigate } from "react-router-dom";
 import { existInLS } from "../../utilities/functions";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import {
   useGlobalContext,
   getUserProfileDetails,
@@ -22,8 +22,7 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
-  const { userInfo, accessToken, profileEditing } = state;
-  console.log("from profile");
+  const { userInfo, accessToken, profileEditing, isLoggedIn } = state;
 
   const handleBackButton = (e) => {
     dispatch({
@@ -32,13 +31,7 @@ function Profile() {
     });
   };
 
-  const firstUpdate = useRef(true);
   useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-
     const getUserDetails = async () => {
       try {
         const modRes = await getUserProfileDetails(
@@ -61,8 +54,12 @@ function Profile() {
     dispatch({
       type: ACTIONS.USER_MAKING_REQUEST,
     });
-    getUserDetails(userInfo.userId, accessToken, dispatch);
-  }, [accessToken]);
+    if (!isLoggedIn) {
+      return null;
+    } else {
+      getUserDetails();
+    }
+  }, [isLoggedIn]);
 
   return (
     <StyledProfile>

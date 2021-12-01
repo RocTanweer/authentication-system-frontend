@@ -14,7 +14,6 @@ const profileDetails = {
 
 function ProfileDetails() {
   const { state, dispatch } = useGlobalContext();
-  console.log("pd");
 
   const handleEditButton = (e) => {
     dispatch({
