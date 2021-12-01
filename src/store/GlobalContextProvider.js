@@ -21,6 +21,7 @@ export const ACTIONS = {
   USER_LOGGED_IN: "profile-info",
   USER_MAKING_REQUEST: "user-making-request",
   USER_PROFILE_EDIT: "user-profile-edit",
+  USER_EDITING_PROFILE: "user-editing-profile",
 };
 
 const initialState = {
@@ -28,6 +29,7 @@ const initialState = {
   accessToken: undefined,
   userInfo: fetchFromLS("userInfo") || {},
   profileInfo: {},
+  editProfileInfo: {},
   profileEditing: false,
 };
 
@@ -131,7 +133,34 @@ export const getUserProfileDetails = async (accessToken, userId) => {
       `${baseURLOfApi}/user/profile/${userId}`,
       config
     );
-    return res.data.user;
+    const { photo, name, bio, phone, email } = res.data.user;
+    const modRes = {
+      photo,
+      name,
+      bio,
+      phone,
+      email,
+    };
+    return modRes;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateUserProfileDetails = async (userId, accessToken, update) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    const url = `${baseURLOfApi}/user/profile/${userId}`;
+    const body = {
+      toBeUpdated: update,
+    };
+    await axios.patch(url, body, config);
   } catch (err) {
     throw err;
   }
@@ -172,15 +201,16 @@ export const getAccessTokenToState = async (dispatch) => {
 const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.USER_SIGNUP:
-      return { loading: false };
+      return { ...state, loading: false };
     case ACTIONS.USER_LOGIN:
       return {
+        ...state,
         accessToken: action.payload.accessToken,
         userInfo: action.payload.userInfo,
         loading: false,
       };
     case ACTIONS.USER_LOGOUT:
-      return { ...initialState };
+      return { ...state, ...initialState };
     case ACTIONS.NEW_AT:
       return { ...state, accessToken: action.payload.accessToken };
 
@@ -188,12 +218,21 @@ const reducer = (state, action) => {
       return {
         ...state,
         profileInfo: action.payload.profileInfo,
+        editProfileInfo: action.payload.profileInfo,
         loading: false,
       };
     case ACTIONS.USER_MAKING_REQUEST:
-      return { loading: true };
+      return { ...state, loading: true };
     case ACTIONS.USER_PROFILE_EDIT:
-      return { profileEditing: action.payload.profileEditing };
+      return { ...state, profileEditing: action.payload.profileEditing };
+    case ACTIONS.USER_EDITING_PROFILE:
+      return {
+        ...state,
+        editProfileInfo: {
+          ...state.editProfileInfo,
+          [action.payload.name]: action.payload.value,
+        },
+      };
     default:
       return state;
   }
