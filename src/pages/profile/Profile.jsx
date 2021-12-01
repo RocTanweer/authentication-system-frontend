@@ -23,6 +23,7 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 function Profile() {
   const { state, dispatch } = useGlobalContext();
   const { userInfo, accessToken, profileEditing } = state;
+  console.log("from profile");
 
   const handleBackButton = (e) => {
     dispatch({
@@ -40,19 +41,27 @@ function Profile() {
 
     const getUserDetails = async () => {
       try {
-        const profileInfo = await getUserProfileDetails(
+        const modRes = await getUserProfileDetails(
           accessToken,
           userInfo.userId
         );
         dispatch({
           type: ACTIONS.USER_LOGGED_IN,
-          payload: { profileInfo },
+          payload: {
+            profileInfo: {
+              ...modRes,
+              password: "",
+            },
+          },
         });
       } catch (err) {
-        console.log(err.response);
+        console.error(err.response);
       }
     };
-    getUserDetails();
+    dispatch({
+      type: ACTIONS.USER_MAKING_REQUEST,
+    });
+    getUserDetails(userInfo.userId, accessToken, dispatch);
   }, [accessToken]);
 
   return (
