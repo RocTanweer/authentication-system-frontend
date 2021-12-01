@@ -1,6 +1,7 @@
 import { StyledProfileDetails, Wrapper, List } from "./ProfileDetails.styled";
 import Button from "../../component/button/Button";
 import { useGlobalContext, ACTIONS } from "../../store/GlobalContextProvider";
+import Loading from "../../component/loading/Loading";
 
 const profileDetails = {
   photo: "https://via.placeholder.com/72x72",
@@ -13,6 +14,7 @@ const profileDetails = {
 
 function ProfileDetails() {
   const { state, dispatch } = useGlobalContext();
+  console.log("pd");
 
   const handleEditButton = (e) => {
     dispatch({
@@ -34,24 +36,39 @@ function ProfileDetails() {
           </Button>
         </header>
         <List>
-          {Object.entries(profileDetails).map(([key, value], index) => {
-            if (index === 0) {
+          {state.loading ? (
+            <Loading color="#2f80ed" width={"50px"} height={"50px"} />
+          ) : (
+            Object.entries(state.profileInfo).map(([key, value], index) => {
+              if (index === 0) {
+                return (
+                  <div key={key}>
+                    <dt>{key}</dt>
+                    <dd>
+                      <img
+                        src={!value && "https://via.placeholder.com/72x72"}
+                        alt="user-profile-pic"
+                      />
+                    </dd>
+                  </div>
+                );
+              }
+              if (key === "password") {
+                return (
+                  <div key={key}>
+                    <dt>{key}</dt>
+                    <dd>{"***********"}</dd>
+                  </div>
+                );
+              }
               return (
                 <div key={key}>
                   <dt>{key}</dt>
-                  <dd>
-                    <img src={value} alt="user-profile-pic" />
-                  </dd>
+                  <dd>{!value ? "N/A" : value}</dd>
                 </div>
               );
-            }
-            return (
-              <div key={key}>
-                <dt>{key}</dt>
-                <dd>{value}</dd>
-              </div>
-            );
-          })}
+            })
+          )}
         </List>
       </Wrapper>
     </StyledProfileDetails>

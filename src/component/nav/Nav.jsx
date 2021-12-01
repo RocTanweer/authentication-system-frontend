@@ -45,7 +45,9 @@ function Nav() {
     try {
       dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       await logout();
+      console.log("logged out");
       dispatch({ type: ACTIONS.USER_LOGOUT });
+      console.log("dispatched");
       navigate("/login", { replace: true });
     } catch (err) {
       console.log(err.response);
@@ -85,7 +87,13 @@ function Nav() {
           </ProfileActions>
           <LogoutButton onClick={handleLogoutButton}>
             <RiLogoutBoxRLine size={19} />
-            <span>{loading ? <Loading color="#EB5757" /> : "Logout"}</span>
+            <span>
+              {loading ? (
+                <Loading color="#EB5757" width={"16px"} height={"16px"} />
+              ) : (
+                "Logout"
+              )}
+            </span>
           </LogoutButton>
         </ProfileCard>
       </ProfileActionWrapper>

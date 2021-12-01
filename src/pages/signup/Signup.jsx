@@ -110,7 +110,11 @@ function Signup() {
             </InputCard>
 
             <Button primary block type="submit">
-              {loading ? <Loading color="#ffffff" /> : "Start coding now"}
+              {loading ? (
+                <Loading color="#ffffff" width={"16px"} height={"16px"} />
+              ) : (
+                "Start coding now"
+              )}
             </Button>
           </SignupForm>
           <p className="signup-suggestion">

@@ -85,7 +85,11 @@ function Login() {
             </InputCard>
 
             <Button primary block type="submit">
-              {loading ? <Loading color="#ffffff" /> : "Login"}
+              {loading ? (
+                <Loading color="#ffffff" size={"16px"} height={"16px"} />
+              ) : (
+                "Login"
+              )}
             </Button>
           </LoginForm>
           <p className="signup-suggestion">

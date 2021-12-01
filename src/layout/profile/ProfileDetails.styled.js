@@ -13,6 +13,7 @@ export const StyledProfileDetails = styled.section``;
 export const Wrapper = styled(Card)`
   margin: 0 auto;
   display: block;
+  min-height: ${rem(580.54)};
   height: auto;
   border-width: 1px;
 
