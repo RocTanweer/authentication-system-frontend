@@ -52,3 +52,11 @@ export const runFuncInInterval = (func, time, ...args) => {
     func(...args);
   }, 1000 * time);
 };
+
+export const filterKeyValuePair = (obj1, obj2) => {
+  const filteredObj = Object.entries(obj1).filter(([key1, value1]) => {
+    return obj2[key1] !== value1;
+  });
+  const newObj = Object.fromEntries(filteredObj);
+  return newObj;
+};
