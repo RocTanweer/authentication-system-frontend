@@ -18,18 +18,18 @@ import { MdLock } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 
 //i custom hooks
-import {
-  register,
-  useGlobalContext,
-  ACTIONS,
-} from "../../store/GlobalContextProvider";
+import { useGlobalContext } from "../../store/GlobalContextProvider";
+import { register } from "../../actions";
 import { useNavigate, Navigate } from "react-router";
-import { existInLS } from "../../utilities/functions";
+import { existInLS, saveToLS } from "../../utilities/functions";
+import { store } from "react-notifications-component";
 
 function Signup() {
   const navigate = useNavigate();
   const { dispatch, state } = useGlobalContext();
-  const { loading } = state;
+  const {
+    userSignup: { loading: signupLoading },
+  } = state;
 
   const handleSignupForm = async (e) => {
     try {
@@ -40,21 +40,35 @@ function Signup() {
       const password = form.password.value;
       //td Do things like a notification
       if (!(name && email && password)) return;
-      dispatch({
-        type: ACTIONS.USER_MAKING_REQUEST,
-      });
+      //td Do things like a notification
+      const emailRegex =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (!emailRegex.test(email)) return;
       //i it will be rejected promise if response status is non 2xx. hense, no redirect to /login page
-      await register({
-        name,
-        email,
-        password,
-      });
-      dispatch({
-        type: ACTIONS.USER_SIGNUP,
-      });
+      await register(
+        {
+          name,
+          email,
+          password,
+        },
+        dispatch
+      );
       navigate("/login", { replace: true });
     } catch (err) {
       //td Do some notification pop-up when promise rejected
+      store.addNotification({
+        title: "Error",
+        message: `${err.response.data.message}`,
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true,
+        },
+      });
       console.log(err.response);
     }
   };
@@ -110,7 +124,7 @@ function Signup() {
             </InputCard>
 
             <Button primary block type="submit">
-              {loading ? (
+              {signupLoading ? (
                 <Loading color="#ffffff" width={"16px"} height={"16px"} />
               ) : (
                 "Start coding now"

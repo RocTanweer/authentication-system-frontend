@@ -15,11 +15,8 @@ import Loading from "../../component/loading/Loading";
 //i third-party components
 import { MdEmail } from "react-icons/md";
 import { MdLock } from "react-icons/md";
-import {
-  useGlobalContext,
-  login,
-  ACTIONS,
-} from "../../store/GlobalContextProvider";
+import { useGlobalContext } from "../../store/GlobalContextProvider";
+import { login } from "../../actions";
 import { useNavigate, Navigate } from "react-router";
 import { existInLS } from "../../utilities/functions";
 
@@ -27,7 +24,9 @@ function Login() {
   const { state, dispatch } = useGlobalContext();
   const navigate = useNavigate();
 
-  const { loading } = state;
+  const {
+    userLogin: { loading: loginLoading },
+  } = state;
 
   const handleLoginForm = async (e) => {
     try {
@@ -36,13 +35,15 @@ function Login() {
       const password = e.target.password.value;
       //td Do things like a notification here
       if (!(email && password)) return;
+      //td Do things like a notification here
+      const emailRegex =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (!emailRegex.test(email)) return;
       const loginCred = {
         email,
         password,
       };
-      dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       await login(loginCred, dispatch);
-      dispatch({ type: ACTIONS.IS_LOGGED_IN });
       navigate("/profile", { replace: true });
     } catch (err) {
       //td do some notification pop-up when login failed
@@ -86,7 +87,7 @@ function Login() {
             </InputCard>
 
             <Button primary block type="submit">
-              {loading ? (
+              {loginLoading ? (
                 <Loading color="#ffffff" size={"16px"} height={"16px"} />
               ) : (
                 "Login"

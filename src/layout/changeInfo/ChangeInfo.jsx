@@ -6,61 +6,46 @@ import {
   InputCI,
 } from "./ChangeInfo.styled";
 import Button from "../../component/button/Button";
-import {
-  ACTIONS,
-  useGlobalContext,
-  updateUserProfileDetails,
-  getUserProfileDetails,
-} from "../../store/GlobalContextProvider";
+import { useGlobalContext } from "../../store/GlobalContextProvider";
+import { updateUserProfileDetails, getUserProfileDetails } from "../../actions";
 import { filterKeyValuePair } from "../../utilities/functions";
+import { changeEditProfileInfo } from "../../actions";
+import Loading from "../../component/loading/Loading";
 
-function ChangeInfo() {
+function ChangeInfo({ setProfileEditing }) {
   const { state, dispatch } = useGlobalContext();
-  const { userInfo, accessToken } = state;
 
   const {
-    editProfileInfo: { photo, name, bio, phone, email, password },
+    userDetails: { profileInfo, editProfileInfo },
+    userDetailsUpdate: { loading: updateLoading },
+    accessToken: { accessToken },
+    userLogin: { userInfo },
   } = state;
 
+  const { photo, name, bio, phone, email, password } = editProfileInfo;
+
   const handleFormInputs = (e) => {
-    const inputName = e.target.name;
-    const inputValue = e.target.value;
-    dispatch({
-      type: ACTIONS.USER_EDITING_PROFILE,
-      payload: {
-        name: inputName,
-        value: inputValue,
-      },
-    });
+    const name = e.target.name;
+    const value = e.target.value;
+    changeEditProfileInfo(name, value, dispatch);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     //td a notifition here please
-    if (!Number(e.target.phone.value) && e.target.phone.value !== "") return;
     try {
-      // dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
-      // dispatch({
-      //   type: ACTIONS.USER_PROFILE_EDIT,
-      //   payload: { profileEditing: false },
-      // });
-      // const update = filterKeyValuePair(
-      //   state.editProfileInfo,
-      //   state.profileInfo
-      // );
-      // await updateUserProfileDetails(userInfo.userId, accessToken, update);
-      // const modRes = await getUserProfileDetails(accessToken, userInfo.userId);
-      // dispatch({
-      //   type: ACTIONS.USER_LOGGED_IN,
-      //   payload: {
-      //     profileInfo: {
-      //       ...modRes,
-      //       password: "",
-      //     },
-      //   },
-      // });
+      const update = filterKeyValuePair(editProfileInfo, profileInfo);
+      console.log(update);
+      await updateUserProfileDetails(
+        userInfo.userId,
+        accessToken,
+        update,
+        dispatch
+      );
+      setProfileEditing(false);
+      await getUserProfileDetails(accessToken, userInfo.userId, dispatch);
     } catch (err) {
-      console.error(err.response);
+      console.error(err);
     }
   };
 
@@ -171,7 +156,11 @@ function ChangeInfo() {
             </InputCard>
           </div>
           <Button type="submit" primary sm>
-            Save
+            {updateLoading ? (
+              <Loading color="#ffffff" size={"16px"} height={"16px"} />
+            ) : (
+              "Save"
+            )}
           </Button>
         </ChangeInfoForm>
       </WrapperCI>

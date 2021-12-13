@@ -8,12 +8,9 @@ import {
 import Nav from "../../component/nav/Nav";
 import { Navigate } from "react-router-dom";
 import { existInLS } from "../../utilities/functions";
-import { useEffect } from "react";
-import {
-  useGlobalContext,
-  getUserProfileDetails,
-  ACTIONS,
-} from "../../store/GlobalContextProvider";
+import { useEffect, useState } from "react";
+import { useGlobalContext } from "../../store/GlobalContextProvider";
+import { getUserProfileDetails } from "../../actions";
 
 import ProfileDetails from "../../layout/profile/ProfileDetails";
 import ChangeInfo from "../../layout/changeInfo/ChangeInfo";
@@ -22,44 +19,31 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
 function Profile() {
   const { state, dispatch } = useGlobalContext();
-  const { userInfo, accessToken, profileEditing, isLoggedIn } = state;
+  const {
+    userLogin: { userInfo },
+    accessToken: { accessToken },
+  } = state;
+  const [profileEditing, setProfileEditing] = useState(false);
 
   const handleBackButton = (e) => {
-    dispatch({
-      type: ACTIONS.USER_PROFILE_EDIT,
-      payload: { profileEditing: false },
-    });
+    setProfileEditing(false);
   };
 
   useEffect(() => {
     const getUserDetails = async () => {
       try {
-        const modRes = await getUserProfileDetails(
-          accessToken,
-          userInfo.userId
-        );
-        dispatch({
-          type: ACTIONS.USER_LOGGED_IN,
-          payload: {
-            profileInfo: {
-              ...modRes,
-              password: "",
-            },
-          },
-        });
+        await getUserProfileDetails(accessToken, userInfo.userId, dispatch);
       } catch (err) {
         console.error(err.response);
       }
     };
-    dispatch({
-      type: ACTIONS.USER_MAKING_REQUEST,
-    });
-    if (!isLoggedIn) {
+
+    if (!accessToken) {
       return null;
     } else {
       getUserDetails();
     }
-  }, [isLoggedIn]);
+  }, [accessToken]);
 
   return (
     <StyledProfile>
@@ -71,7 +55,7 @@ function Profile() {
             <h1>Personal Info</h1>
             <p>Basic info, like your name and photo</p>
           </ProfileHeader>
-          <ProfileDetails />
+          <ProfileDetails setProfileEditing={setProfileEditing} />
         </>
       )}
 
@@ -83,7 +67,7 @@ function Profile() {
               <MdOutlineKeyboardArrowLeft size={27} /> Back
             </BackButton>
           </ProfileEditTop>
-          <ChangeInfo />
+          <ChangeInfo setProfileEditing={setProfileEditing} />
         </>
       )}
     </StyledProfile>

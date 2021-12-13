@@ -5,29 +5,25 @@ import { GlobalStyles } from "../store/GlobalStyles.styled";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Chat from "../pages/chat/Chat";
 import { useLayoutEffect } from "react";
+import { useGlobalContext } from "../store/GlobalContextProvider";
 import {
   getAccessTokenToState,
-  ACTIONS,
-  useGlobalContext,
-} from "../store/GlobalContextProvider";
+  getAccessTokenIntervalToState,
+} from "../actions";
 import { runFuncInInterval, existInLS } from "../utilities/functions";
+import ReactNotification from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+
 function App() {
   const { dispatch } = useGlobalContext();
 
   useLayoutEffect(() => {
     const getNewAT = async () => {
-      const newAccessToken = await getAccessTokenToState();
-      dispatch({
-        type: ACTIONS.NEW_AT,
-        payload: { accessToken: newAccessToken },
-      });
-      dispatch({
-        type: ACTIONS.IS_LOGGED_IN,
-      });
-      runFuncInInterval(getAccessTokenToState, 60, dispatch);
+      await getAccessTokenToState(dispatch);
+      const interval = runFuncInInterval(getAccessTokenToState, 60, dispatch);
+      getAccessTokenIntervalToState(interval, dispatch);
     };
     if (existInLS("userInfo")) {
-      dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
       getNewAT();
     }
   }, []);
@@ -35,6 +31,7 @@ function App() {
   return (
     <main>
       <BrowserRouter>
+        <ReactNotification />
         <GlobalStyles />
         <Routes>
           <Route path="/" element={<Navigate replace to="/signup" />} />

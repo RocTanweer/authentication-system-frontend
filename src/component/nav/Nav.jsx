@@ -21,11 +21,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 //i react hooks
 import { useState } from "react";
-import {
-  logout,
-  useGlobalContext,
-  ACTIONS,
-} from "../../store/GlobalContextProvider";
+import { useGlobalContext } from "../../store/GlobalContextProvider";
+
+import { logout } from "../../actions";
 
 /**
  * i instead of wrapping native <nav></nav> component, it wraps styled one
@@ -37,17 +35,17 @@ function Nav() {
   const navigate = useNavigate();
   const { state, dispatch } = useGlobalContext();
 
-  const { loading } = state;
+  const {
+    userLogout: { loading: logoutLoading },
+    accessToken: { interval },
+  } = state;
 
   const name = "Xanthe Neal";
 
   const handleLogoutButton = async (e) => {
     try {
-      dispatch({ type: ACTIONS.USER_MAKING_REQUEST });
-      await logout();
-      console.log("logged out");
-      dispatch({ type: ACTIONS.USER_LOGOUT });
-      console.log("dispatched");
+      await logout(dispatch);
+      clearInterval(interval);
       navigate("/login", { replace: true });
     } catch (err) {
       console.log(err.response);
@@ -88,7 +86,7 @@ function Nav() {
           <LogoutButton onClick={handleLogoutButton}>
             <RiLogoutBoxRLine size={19} />
             <span>
-              {loading ? (
+              {logoutLoading ? (
                 <Loading color="#EB5757" width={"16px"} height={"16px"} />
               ) : (
                 "Logout"

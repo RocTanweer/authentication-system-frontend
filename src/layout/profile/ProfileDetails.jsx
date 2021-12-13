@@ -12,14 +12,16 @@ const profileDetails = {
   password: "***********",
 };
 
-function ProfileDetails() {
+function ProfileDetails({ setProfileEditing }) {
   const { state, dispatch } = useGlobalContext();
 
+  const {
+    userDetails: { profileInfo, loading: detailsLoading },
+    accessToken: { loading: ATLoading },
+  } = state;
+
   const handleEditButton = (e) => {
-    dispatch({
-      type: ACTIONS.USER_PROFILE_EDIT,
-      payload: { profileEditing: true },
-    });
+    setProfileEditing(true);
   };
 
   return (
@@ -35,10 +37,10 @@ function ProfileDetails() {
           </Button>
         </header>
         <List>
-          {state.loading ? (
+          {detailsLoading || ATLoading ? (
             <Loading color="#2f80ed" width={"50px"} height={"50px"} />
           ) : (
-            Object.entries(state.profileInfo).map(([key, value], index) => {
+            Object.entries(profileInfo).map(([key, value], index) => {
               if (index === 0) {
                 return (
                   <div key={key}>
