@@ -48,9 +48,10 @@ export const existInLS = (name) => {
  * @param {*} args - rest of the parameters
  */
 export const runFuncInInterval = (func, time, ...args) => {
-  setInterval(() => {
+  const interval = setInterval(() => {
     func(...args);
   }, 1000 * time);
+  return interval;
 };
 
 export const filterKeyValuePair = (obj1, obj2) => {
