@@ -154,10 +154,10 @@ export const getUserProfileDetails = async (accessToken, userId, dispatch) => {
     );
     const { photo, name, bio, phone, email } = res.data.user;
     const modRes = {
-      photo,
+      photo: photo ? photo : "",
       name,
-      bio,
-      phone,
+      bio: bio ? bio : "",
+      phone: phone ? phone : "",
       email,
       password: "",
     };
