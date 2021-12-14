@@ -38,9 +38,8 @@ function Nav() {
   const {
     userLogout: { loading: logoutLoading },
     accessToken: { interval },
+    userDetails: { loading: profileLoading, profileInfo },
   } = state;
-
-  const name = "Xanthe Neal";
 
   const handleLogoutButton = async (e) => {
     try {
@@ -60,8 +59,22 @@ function Nav() {
           type="button"
           onClick={() => setIsCollapse((prev) => !prev)}
         >
-          <img src="https://via.placeholder.com/32x36" alt="profile" />
-          <span>{name}</span>
+          {profileLoading ? (
+            <Loading color="#2f80ed" width="32" height="36" />
+          ) : (
+            <>
+              <img
+                src={
+                  profileInfo.photo
+                    ? profileInfo.photo
+                    : "https://via.placeholder.com/32x36"
+                }
+                alt="profile"
+                style={{ width: "32px", height: "36px" }}
+              />
+              <span>{profileInfo.name}</span>
+            </>
+          )}
           <ArrowIcon $isCollapse={isCollapse} size={20} />
         </DropDownButton>
 
