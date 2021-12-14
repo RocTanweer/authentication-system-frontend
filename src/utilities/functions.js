@@ -1,3 +1,5 @@
+import Resizer from "react-image-file-resizer";
+
 /**
  * Converts px to rem
  * @param {number} inPx - measurement in px
@@ -60,4 +62,21 @@ export const filterKeyValuePair = (obj1, obj2) => {
   });
   const newObj = Object.fromEntries(filteredObj);
   return newObj;
+};
+
+export const fileChanger = (file, width, height) => {
+  return new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      width,
+      height,
+      "PNG",
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "base64"
+    );
+  });
 };
