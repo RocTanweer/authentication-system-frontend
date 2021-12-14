@@ -8,7 +8,7 @@ import {
 import Button from "../../component/button/Button";
 import { useGlobalContext } from "../../store/GlobalContextProvider";
 import { updateUserProfileDetails, getUserProfileDetails } from "../../actions";
-import { filterKeyValuePair } from "../../utilities/functions";
+import { filterKeyValuePair, fileChanger } from "../../utilities/functions";
 import { changeEditProfileInfo } from "../../actions";
 import Loading from "../../component/loading/Loading";
 
@@ -24,10 +24,19 @@ function ChangeInfo({ setProfileEditing }) {
 
   const { photo, name, bio, phone, email, password } = editProfileInfo;
 
-  const handleFormInputs = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    changeEditProfileInfo(name, value, dispatch);
+  const handleFormInputs = async (e) => {
+    try {
+      let name = e.target.name;
+      let value;
+      if (name === "photo") {
+        value = await fileChanger(e.target.files[0], 72, 72);
+      } else {
+        value = e.target.value;
+      }
+      changeEditProfileInfo(name, value, dispatch);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleFormSubmit = async (e) => {
@@ -35,7 +44,6 @@ function ChangeInfo({ setProfileEditing }) {
     //td a notifition here please
     try {
       const update = filterKeyValuePair(editProfileInfo, profileInfo);
-      console.log(update);
       await updateUserProfileDetails(
         userInfo.userId,
         accessToken,
@@ -62,11 +70,16 @@ function ChangeInfo({ setProfileEditing }) {
           <div>
             <label htmlFor="picFile">
               <img
-                src={!photo && "https://via.placeholder.com/72x72"}
+                src={photo ? photo : "https://via.placeholder.com/72x72"}
                 alt="profile-pic"
               />
             </label>
-            <input type="file" id="picFile" name="photo" />
+            <input
+              type="file"
+              id="picFile"
+              name="photo"
+              onChange={handleFormInputs}
+            />
           </div>
           <div>
             <label htmlFor="name">Name</label>
