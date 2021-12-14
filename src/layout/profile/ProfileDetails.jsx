@@ -47,7 +47,9 @@ function ProfileDetails({ setProfileEditing }) {
                     <dt>{key}</dt>
                     <dd>
                       <img
-                        src={!value && "https://via.placeholder.com/72x72"}
+                        src={
+                          value ? value : "https://via.placeholder.com/72x72"
+                        }
                         alt="user-profile-pic"
                       />
                     </dd>
