@@ -3,15 +3,6 @@ import Button from "../../component/button/Button";
 import { useGlobalContext, ACTIONS } from "../../store/GlobalContextProvider";
 import Loading from "../../component/loading/Loading";
 
-const profileDetails = {
-  photo: "https://via.placeholder.com/72x72",
-  name: "Xanthe Neal",
-  bio: "I am a software developer and a big fan of devchallenges...",
-  phone: 74795192,
-  email: "xanthe.neal@gmail.com",
-  password: "***********",
-};
-
 function ProfileDetails({ setProfileEditing }) {
   const { state, dispatch } = useGlobalContext();
 

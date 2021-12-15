@@ -21,8 +21,11 @@ import { FaUserAlt } from "react-icons/fa";
 import { useGlobalContext } from "../../store/GlobalContextProvider";
 import { register } from "../../actions";
 import { useNavigate, Navigate } from "react-router";
-import { existInLS, saveToLS } from "../../utilities/functions";
-import { store } from "react-notifications-component";
+import {
+  emailChecker,
+  existInLS,
+  notificationGenerator,
+} from "../../utilities/functions";
 
 function Signup() {
   const navigate = useNavigate();
@@ -38,12 +41,12 @@ function Signup() {
       const name = form.name.value;
       const email = form.email.value;
       const password = form.password.value;
-      //td Do things like a notification
-      if (!(name && email && password)) return;
-      //td Do things like a notification
-      const emailRegex =
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-      if (!emailRegex.test(email)) return;
+
+      if (!(name && email && password))
+        throw new Error("All fields are required");
+
+      emailChecker(email);
+
       //i it will be rejected promise if response status is non 2xx. hense, no redirect to /login page
       await register(
         {
@@ -55,21 +58,7 @@ function Signup() {
       );
       navigate("/login", { replace: true });
     } catch (err) {
-      //td Do some notification pop-up when promise rejected
-      store.addNotification({
-        title: "Error",
-        message: `${err.response.data.message}`,
-        type: "danger",
-        insert: "top",
-        container: "top-center",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true,
-        },
-      });
-      console.log(err.response);
+      notificationGenerator(err);
     }
   };
 

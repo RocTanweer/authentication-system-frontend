@@ -1,4 +1,5 @@
 import Resizer from "react-image-file-resizer";
+import { store } from "react-notifications-component";
 
 /**
  * Converts px to rem
@@ -79,4 +80,27 @@ export const fileChanger = (file, width, height) => {
       "base64"
     );
   });
+};
+
+export const notificationGenerator = (err, title = "", type = "danger") => {
+  store.addNotification({
+    title: title,
+    message: `${err.response?.data.message ? err.response.data.message : err}`,
+    type: type,
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animate__animated", "animate__fadeIn"],
+    animationOut: ["animate__animated", "animate__fadeOut"],
+    dismiss: {
+      duration: 5000,
+      onScreen: true,
+    },
+  });
+};
+
+export const emailChecker = (email) => {
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+  if (!emailRegex.test(email)) throw new Error("Invalid Email");
 };

@@ -18,7 +18,11 @@ import { MdLock } from "react-icons/md";
 import { useGlobalContext } from "../../store/GlobalContextProvider";
 import { login } from "../../actions";
 import { useNavigate, Navigate } from "react-router";
-import { existInLS } from "../../utilities/functions";
+import {
+  emailChecker,
+  existInLS,
+  notificationGenerator,
+} from "../../utilities/functions";
 
 function Login() {
   const { state, dispatch } = useGlobalContext();
@@ -33,21 +37,20 @@ function Login() {
       e.preventDefault();
       const email = e.target.email.value;
       const password = e.target.password.value;
-      //td Do things like a notification here
-      if (!(email && password)) return;
-      //td Do things like a notification here
-      const emailRegex =
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-      if (!emailRegex.test(email)) return;
+
+      if (!(email && password)) throw new Error("All fields are required");
+
+      emailChecker(email);
+
       const loginCred = {
         email,
         password,
       };
+
       await login(loginCred, dispatch);
       navigate("/profile", { replace: true });
     } catch (err) {
-      //td do some notification pop-up when login failed
-      console.error(err.response);
+      notificationGenerator(err);
     }
   };
 

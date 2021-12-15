@@ -8,7 +8,12 @@ import {
 import Button from "../../component/button/Button";
 import { useGlobalContext } from "../../store/GlobalContextProvider";
 import { updateUserProfileDetails, getUserProfileDetails } from "../../actions";
-import { filterKeyValuePair, fileChanger } from "../../utilities/functions";
+import {
+  filterKeyValuePair,
+  fileChanger,
+  notificationGenerator,
+  emailChecker,
+} from "../../utilities/functions";
 import { changeEditProfileInfo } from "../../actions";
 import Loading from "../../component/loading/Loading";
 
@@ -40,9 +45,12 @@ function ChangeInfo({ setProfileEditing }) {
   };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    //td a notifition here please
     try {
+      e.preventDefault();
+
+      const email = e.target.email.value;
+      emailChecker(email);
+
       const update = filterKeyValuePair(editProfileInfo, profileInfo);
       await updateUserProfileDetails(
         userInfo.userId,
@@ -53,7 +61,7 @@ function ChangeInfo({ setProfileEditing }) {
       setProfileEditing(false);
       await getUserProfileDetails(accessToken, userInfo.userId, dispatch);
     } catch (err) {
-      console.error(err);
+      notificationGenerator(err);
     }
   };
 
