@@ -1,5 +1,3 @@
-import { fetchFromLS } from "../utilities/functions";
-
 import {
   userSignupReducer,
   userLoginReducer,
@@ -8,8 +6,9 @@ import {
   userDetailsUpdateReducer,
   accessTokenToState,
 } from "../reducers/";
+import { fetchFromLS } from "../utilities/functions";
 
-export const baseURLOfApi = "https://authentication-system-api.herokuapp.com";
+export const baseURLOfApi = "https://roc-auth.onrender.com";
 
 /**
  * i This function is same as combineReducer from redux
